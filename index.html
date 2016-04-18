@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html ng-app="store">
+    <head>
+        <!--Link Boostrap's css-->
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <!--Load Angular.JS-->
+        <script type="text/javascript" src="js/angular.min.js"></script>
+        <!--Load firebase-->
+        <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
+        <script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
+
+
+        <title>Learning Angular.JS</title>
+    </head>
+    <body class="list-group" ng-controller="UserControl as store">
+            <div ng-repeat="product in store.products | orderBy: 'price'" class="list-group-item">
+                        <h1> {{product.name}} <em class="pull-right">{{product.price | currency}}</em></h1>
+                
+
+                        <div class="gallery" ng-show="product.images.length" style="text-align: center" ng-controller="GalleryController as gallery">
+                            <div class="img-wrap">
+                                <img ng-src="{{product.images[gallery.current]}}">
+                            </div>
+                            <ul class="img-thumbnails clearfix" style="display: inline-block;">
+                                <li ng-repeat="ima in product.images" class="small-image thumbnail pull-left" ng-click="gallery.setCurrent($index)">
+                                    <img ng-src="{{ima}}" width="50px">
+                                </li>
+                            </ul>
+                        </div>
+                        <section ng-controller="PanelController as panel">
+                            <ul class="nav nav-pills">
+                                <li ng-class="{active:panel.isSelected(1)}">
+                                    <a href="" ng-click="panel.selectTab(1)">Description</a>
+                                </li>
+                                <li ng-class="{active:panel.isSelected(2)}">
+                                    <a href="" ng-click="panel.selectTab(2)">Specs</a>
+                                </li>
+                                <li ng-class="{active:panel.isSelected(3)}">
+                                    <a href="" ng-click="panel.selectTab(3)">Reviews</a>
+                                </li>
+                            </ul>
+                            <div class="panel" ng-show="panel.isSelected(1)">
+                                <h4>{{product.description}}</h4>
+                            </div>
+                            <div class="panel" ng-show="panel.isSelected(2)">
+                                <h4>Spec Panel</h4>
+                            </div>
+                            <form ng-submit="reviewCtrl.$valid || reviewCtrl.submit(product)" class="panel" ng-show="panel.isSelected(3)" name="reviewForm" class="form-control" ng-controller="ReviewController as reviewCtrl"> 
+                                    <blockquote ng-repeat="rev in product.reviews">
+                                        <b>{{rev.stars}} <span class="glyphicon glyphicon-star"></span></b>
+                                        {{rev.text}}
+                                        <br>
+                                        <cite>by {{rev.author}}</cite>
+                                    </blockquote>
+                                    <blockquote ng-hide="!reviewCtrl.review.text">
+                                        <b>{{reviewCtrl.review.stars}} <span class="glyphicon glyphicon-star"></span></b>
+                                        {{reviewCtrl.review.text}}
+                                        <br>
+                                        <cite>by {{reviewCtrl.review.author}}</cite>
+                                    </blockquote>
+                                    <div class="form-group">
+                                        <label for="reviewText">Review</label>
+                                        <textarea class="form-group" style="width: 100%"  ng-model="reviewCtrl.review.text">
+
+                                        </textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reviewStars">Stars</label>
+                                        <br>
+                                        <select class="form-input" ng-model="reviewCtrl.review.stars" required>
+                                            <option value="1">1 Stars</option>
+                                            <option value="2">2 Stars</option>
+                                            <option value="3">3 Stars</option>
+                                            <option value="4">4 Stars</option>
+                                            <option value="5">5 Stars</option>
+                                        </select>
+                                        <div class="dropdown">
+                                          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            Dropdown
+                                            <span class="caret"></span>
+                                          </button>
+                                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                            <li><a href="#">Action</a></li>
+                                            <li><a href="#">Another action</a></li>
+                                            <li><a href="#">Something else here</a></li>
+                                            <li role="separator" class="divider"></li>
+                                            <li><a href="#">Separated link</a></li>
+                                          </ul>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                    <label for="exampleInputEmail1">Author</label>
+                                    <input type="text" class="form-control"  placeholder="Author"  ng-model="reviewCtrl.review.author" required>
+                                  </div> 
+                                    <fieldset>
+                                  <button type="submit" class="btn btn-default">Submit</button>
+                                </fieldset>
+                                        </form>
+                        </section>
+                        <button ng-disabled="!product.inStock" class="btn btn-success">Add to Cart</button>
+          
+        </div>
+        
+        <!--Load our app's script-->
+        <script type="text/javascript" src="js/app.js"></script>
+    </body>
+</html>
